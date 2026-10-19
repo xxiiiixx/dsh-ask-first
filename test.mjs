@@ -151,8 +151,11 @@ test('step 1 of a turn gets one plugin-sourced reminder', async () => {
   assert.equal(decision.messages.length, 1)
   const [message] = decision.messages
   assert.equal(message.role, 'user')
-  assert.equal(message.source.kind, 'plugin')
-  assert.equal(message.source.plugin, 'ask-first')
+  // Session format v4 requires a producer-owned kind; the v3
+  // {kind:'plugin', plugin:...} wrapper is retired and rejected at write time.
+  assert.equal(message.source.kind, 'ask-first')
+  assert.notEqual(message.source.kind, 'plugin')
+  assert.equal(message.source.plugin, undefined)
   assert.ok(message.content[0].text.includes('ask_user_question'))
 })
 
@@ -188,7 +191,7 @@ test('a rejected pre-step is passed through untouched', async () => {
 test('an existing ask-first message in the batch is not duplicated', async () => {
   const { ctx, listeners } = createFakeCtx()
   apply(ctx, {})
-  const existing = { role: 'user', content: [], source: { kind: 'plugin', plugin: 'ask-first' } }
+  const existing = { role: 'user', content: [], source: { kind: 'ask-first', form: 'notice' } }
   const decision = await runPreStep(listeners[0], { messages: [existing], turn: 1, step: 1 })
   assert.equal(decision.messages.length, 1)
 })
@@ -196,7 +199,7 @@ test('an existing ask-first message in the batch is not duplicated', async () =>
 test('an unrelated plugin message does not suppress the reminder', async () => {
   const { ctx, listeners } = createFakeCtx()
   apply(ctx, {})
-  const other = { role: 'user', content: [], source: { kind: 'plugin', plugin: 'time-context' } }
+  const other = { role: 'user', content: [], source: { kind: 'time-context' } }
   const decision = await runPreStep(listeners[0], { messages: [other], turn: 1, step: 1 })
   assert.equal(decision.messages.length, 2)
 })
