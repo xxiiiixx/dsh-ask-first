@@ -1,0 +1,51 @@
+{
+  "name": "dsh-ask-first",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Ask First — an advisory \"ask instead of assuming\" guard for DeepSeek Harness. Adds a system-prompt contract plus a per-turn reminder so the agent asks the user when a request is genuinely unclear, instead of deciding on their behalf.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "README.md",
+    "README_EN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test.mjs",
+    "verify": "node verify-wiring.mjs",
+    "verify:composition": "node verify-composition.mjs",
+    "verify:installed": "node verify-installed.mjs",
+    "check": "node test.mjs && node verify-wiring.mjs && node verify-composition.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xxiiiixx/dsh-ask-first.git"
+  },
+  "homepage": "https://github.com/xxiiiixx/dsh-ask-first#readme",
+  "bugs": {
+    "url": "https://github.com/xxiiiixx/dsh-ask-first/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "ask-first",
+    "clarification",
+    "guard"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "license": "MIT"
+}

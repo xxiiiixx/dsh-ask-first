@@ -1,0 +1,8 @@
+# dsh-ask-first bundle patch.
+#
+# One `insert` mounts the plugin row. The plugin is Host-only (no browser
+# half), so no `dsh.client` declaration is needed in package.json.
+- insert:
+    - id: ask-first
+      name: 'dsh-ask-first'
+      config: {}
