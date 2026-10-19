@@ -82,12 +82,13 @@ const decision = await ctx.waterfall('agent/pre-step', { agent: { id: 'probe' },
 check(seen === 1, 'the listener delegates to next()')
 check(decision.kind === 'enter', 'the decision stays enter')
 check(
-  decision.messages.some((message) => message.source?.plugin === 'ask-first'),
-  'the entering decision carries a plugin-sourced reminder',
+  decision.messages.some((message) => message.source?.kind === plugin.PLUGIN_SOURCE.kind),
+  'the entering decision carries a producer-sourced reminder',
   JSON.stringify(decision.messages.map((m) => m.source))
 )
 
-const text = decision.messages.find((m) => m.source?.plugin === 'ask-first')?.content?.[0]?.text ?? ''
+const text =
+  decision.messages.find((m) => m.source?.kind === plugin.PLUGIN_SOURCE.kind)?.content?.[0]?.text ?? ''
 check(text.includes('<system-reminder>'), 'the reminder is framed as a system reminder')
 check(text.includes('ask_user_question'), 'the reminder names the tool')
 
