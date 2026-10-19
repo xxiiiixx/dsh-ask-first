@@ -54,8 +54,12 @@ const decision = await ctx.waterfall(
   { agent: { id: 'probe', options: {}, session: { header: {} } }, messages: [], turn: 1, step: 1, signal: undefined },
   async () => ({ kind: 'enter', messages: [] })
 )
-const injected = decision.messages.filter((m) => m.source?.plugin === 'ask-first')
-check(injected.length === 1, 'exactly one plugin-sourced reminder injected', String(injected.length))
+const injected = decision.messages.filter((m) => m.source?.kind === plugin.PLUGIN_SOURCE.kind)
+check(injected.length === 1, 'exactly one producer-sourced reminder injected', String(injected.length))
+check(
+  decision.messages.every((m) => m.source?.kind !== 'plugin'),
+  'no message uses the retired v3 {kind:"plugin"} wrapper'
+)
 const reminderText = injected[0]?.content?.[0]?.text ?? ''
 check(reminderText.includes('<system-reminder>'), 'reminder is system-reminder framed')
 check(reminderText.includes('ask_user_question'), 'reminder names the tool')
