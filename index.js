@@ -42,12 +42,21 @@ export const SECTION_NAME = 'ask-first:policy'
 export const SECTION_ORDER = 150
 
 /**
- * Source stamped on the per-turn reminder. `kind: 'plugin'` is load-bearing:
- * an unlabeled injected message would render as a user prompt in derived
- * history, while a plugin source stays source-attributed and reconstructable
- * from the session log.
+ * Source stamped on the per-turn reminder.
+ *
+ * Session format v4 requires a **producer-owned** `kind` — the bare producer
+ * name written straight into `kind`, exactly as the shipped `time-context`
+ * (`{kind: 'time-context'}`) and `repeat-tool-reminder`
+ * (`{kind: 'repeat-tool-reminder'}`) plugins do. The old v3 wrapper
+ * `{kind: 'plugin', plugin: '<name>'}` is retired and rejected at write time:
+ *
+ *   format v4 message requires a producer-owned source kind
+ *
+ * A missing or user-like kind is equally wrong: an unlabeled injected message
+ * would render as a genuine user prompt in derived history. The producer kind
+ * keeps it source-attributed and reconstructable from the session log.
  */
-export const PLUGIN_SOURCE = { kind: 'plugin', plugin: 'ask-first' }
+export const PLUGIN_SOURCE = { kind: 'ask-first' }
 
 /**
  * The six ambiguity classes selected for this deployment. Kept as structured
@@ -151,8 +160,7 @@ function createUserMessage(text, summary) {
 
 /** Whether an injected message already carries this plugin's source. */
 function sameSource(message) {
-  const source = message?.source
-  return source?.kind === 'plugin' && source?.plugin === PLUGIN_SOURCE.plugin
+  return message?.source?.kind === PLUGIN_SOURCE.kind
 }
 
 /**
