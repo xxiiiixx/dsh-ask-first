@@ -182,9 +182,11 @@ resolvable — proof the app will mount it, not just that the source parses. It 
 
 - **Two surfaces, one contract.** The static section carries the full policy; the reminder is
   one line. Repeating the whole policy every turn burns tokens and trains the model to skim it.
-- **The `kind: 'plugin'` source is load-bearing.** An unlabeled injected message renders as a
-  genuine user prompt in derived history; with the plugin source it stays source-attributed and
-  reconstructable from the session log.
+- **The source must be `{ kind: 'ask-first' }` — a v4 producer kind.** Session format v4
+  retired the `{kind:'plugin', plugin:...}` wrapper; using it throws
+  `format v4 message requires a producer-owned source kind` at write time, while an unlabeled
+  injected message renders as a genuine user prompt in derived history. Both are wrong, so the
+  bare producer kind is the only correct shape.
 - **Turn-scoped, not step-scoped, by default.** A long multi-step turn should not be re-reminded
   on every step; `"step"` is available when you want that.
 - **No tool schema of its own.** The guard reuses the shipped `ask_user_question`
