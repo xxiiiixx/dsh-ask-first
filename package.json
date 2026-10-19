@@ -15,13 +15,13 @@
     "README.md",
     "README_EN.md",
     "LICENSE"
-  ],
-  "scripts": {
+  ],  "scripts": {
     "test": "node test.mjs",
     "verify": "node verify-wiring.mjs",
     "verify:composition": "node verify-composition.mjs",
     "verify:installed": "node verify-installed.mjs",
-    "check": "node test.mjs && node verify-wiring.mjs && node verify-composition.mjs"
+    "verify:source": "node verify-v4-source.mjs",
+    "check": "node test.mjs && node verify-wiring.mjs && node verify-composition.mjs && node verify-v4-source.mjs"
   },
   "repository": {
     "type": "git",
