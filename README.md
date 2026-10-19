@@ -171,8 +171,10 @@ desktop profile，断言 `ask-first` 行存在、已启用、可解析——证�
 
 - **两个面，一份准则。** 静态段落承载完整政策，提醒只有一行。每轮重复整份政策既费
   token，也会让模型学会略读。
-- **`kind: 'plugin'` 来源是必需的。** 没有来源标记的注入消息在派生历史里会渲染成真正的
-  用户发言；带插件来源才能保持可溯源、可从会话日志重建。
+- **来源必须是 `{ kind: 'ask-first' }`（v4 生产者标识）。** 会话格式 v4 已废弃
+  `{kind:'plugin', plugin:...}` 包装，使用它会在写入时抛
+  `format v4 message requires a producer-owned source kind`；而没有来源标记的注入消息
+  又会在派生历史里渲染成真正的用户发言。两者都会出错，所以必须用裸的生产者 kind。
 - **默认按"轮"而非按"步"。** 一个多步的长轮次不应每步都被提醒；需要时可用 `"step"`。
 - **不新增工具 schema。** 复用随包发布的 `ask_user_question`
   （`@deepseek-ai/dsh-tool-ask-user`），因此不增加 schema token 开销。
